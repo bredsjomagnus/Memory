@@ -7,7 +7,7 @@
     "eslint": "eslint .; exit 0",
     "lesswatch": "less-watch-compiler public/stylesheets/modules public/stylesheets style.less",
     "test": "nyc --reporter=html --reporter=text mocha test/**/*.js",
-    "test-scrutinizer": "nyc --all --reporter=html --reporter=clover mocha test/**/*.js",
+    "test-scrutinizer": "nyc --reporter=html --reporter=clover mocha test/**/*.js",
     "report-coveralls": "nyc report --reporter=text-lcov | coveralls",
     "report-codecov": "nyc report --reporter=lcov > coverage.lcov && codecov"
   },

@@ -5,65 +5,74 @@
  */
 "use strict";
 
-class Card {
+class Memorycard {
     /**
      * @constructor
-     *
-     * @param {object} options - Configure by sending options.
      */
-    constructor(options = {}) {
-        this.suits   = options.suits || ["♣", "♦", "♠", "♥"];
-        this.pipFace = options.pipFace || [
-            "A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"
-        ];
-        this.rank = options.rank || [
-            14, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13
-        ];
-        this.ranks      = this.pipFace.length;
-        this.numOfCards = this.ranks * this.suits.length;
+    constructor() {
+        this.cardvalue  = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];
+        this.numOfCards = this.cardvalue.length;
     }
 
-
+    /**
+     * Get value of memorycard based on the id.
+     *
+     * @param {integer} id - The id of the memorycard.
+     *
+     * @returns {integer} value of memorycard.
+     */
+    getCardValue(id) {
+        if (id < 0 || id >= this.numOfCards) {
+            return undefined;
+        }
+        return this.cardvalue[id];
+    }
 
     /**
-     * Get a card to display based on the id of the card.
+     * Get id of memorycard based on value.
      *
      * @param {integer} id - The id of the card.
      *
-     * @returns {string} A string representing the card.
+     * @returns {array} possible id:s of card with value in format [id, id]
      */
-    getCard(id) {
-        var suit;
-        var pipFace;
-
-        if (id < 0 || id >= this.numOfCards) {
-            return undefined;
+    getCardId(value) {
+        if (value < 1 || value >= this.cardvalue[this.numOfCards - 1]) {
+            return [-1, -1];
         }
 
-        suit    = Math.floor(id / this.ranks);
-        pipFace = Math.floor(id % this.ranks);
-        return this.suits[suit] + this.pipFace[pipFace];
+        var result = [];
+        var pos = this.cardvalue.indexOf(value);
+
+        // walking cardvalue and adding posiiton to result[] where correct value
+        while (result.indexOf(pos) === -1) {
+            result.push(pos);
+            pos = this.cardvalue.indexOf(value, pos + 1);
+        }
+
+        // result contains positions and -1. Splice to take away -1.
+        result.splice(2, 1);
+
+        return result;
     }
 
-
-
     /**
-     * Get the card rank from its id.
+     * Is two memorycards a pair.
      *
-     * @param {integer} value - The id of the card.
+     * @param {integer} id - The id of the card.
      *
-     * @returns {integer} A value representing its rank.
+     * @returns {booelan} true if pair, false if not.
      */
-    getRank(id) {
-        if (id < 0 || id >= this.numOfCards) {
+    isPair(cardone, cardtwo) {
+        if (cardone < 0 || cardone >= this.numOfCards) {
+            return undefined;
+        }
+        if (cardtwo < 0 || cardtwo >= this.numOfCards) {
             return undefined;
         }
 
-        return this.rank[Math.floor(id % this.ranks)];
+        return this.cardvalue[cardone] == this.cardvalue[cardtwo];
     }
 }
 
-
-
 // Export module
-module.exports = Card;
+module.exports = Memorycard;

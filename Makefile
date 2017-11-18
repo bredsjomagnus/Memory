@@ -148,7 +148,7 @@ test2: node7alpinetest
 
 # target: test3               - Run test against node latest.
 .PHONY: test3
-test2: nodelatest
+test3: nodelatest
 	@$(call HELPTEXT,$@)
 	[ ! -f composer.json ] || composer validate
 
