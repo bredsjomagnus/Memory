@@ -1,6 +1,6 @@
 **BUILD STATUS**
 
-*Travis*: [![Build Status](https://travis-ci.org/bredsjomagnus/memory.svg?branch=master)](https://travis-ci.org/bredsjomagnus/memory)
+*Travis*: [![Build Status](https://travis-ci.org/bredsjomagnus/Memory.svg?branch=master)](https://travis-ci.org/bredsjomagnus/Memory)
 
 *Scrutinizer*: [![Build Status](https://scrutinizer-ci.com/g/bredsjomagnus/Memory/badges/build.png?b=master)](https://scrutinizer-ci.com/g/bredsjomagnus/Memory/build-status/master)
 
