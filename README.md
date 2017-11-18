@@ -18,8 +18,8 @@
 
 *Codeclimate*
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/a0743fcaaf6e31f8e958/maintainability)](https://codeclimate.com/github/bredsjomagnus/memory/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/a0743fcaaf6e31f8e958/test_coverage)](https://codeclimate.com/github/bredsjomagnus/memory/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/fe43330227738fcde371/maintainability)](https://codeclimate.com/github/bredsjomagnus/Memory/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/fe43330227738fcde371/test_coverage)](https://codeclimate.com/github/bredsjomagnus/Memory/test_coverage)
 
 *Codeacy*
 
