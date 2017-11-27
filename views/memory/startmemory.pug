@@ -1,0 +1,45 @@
+extend ../layout.pug
+
+block main
+    .container
+        .page
+            h1 Anslut till spelservern
+
+            .row
+                .col-md-6
+                    <form id='connectform'>
+                        <div class="input-group">
+                            <input class='form-control' style=width:98%; type='text' id='nickname' placeholder='nickname'>
+                            <span class="input-group-btn">
+                                <input class='btn btn-primary' type='button' id='connect' value='Anslut' disabled>
+                            </span>
+                        </div>
+
+                    </form>
+                    <form id='messageform' class='messageform'>
+                        <div class="input-group">
+                            <input class='form-control' type='text' id='message' placeholder='meddelande'>
+                            <span class="input-group-btn">
+                                <input class='btn btn-primary' type='button' id='messagebtn' value='Skicka'>
+                                <input class='btn btn-danger' type='button' id='disconnectbtn' value='Koppla ner'>
+                            </span>
+                        </div>
+                    </form>
+            .row
+                .col-md-10
+                    <button id='startgame' class='startgame'>Starta nytt spel</button>
+
+            .row
+                .col-md-4.col-md-offset-8
+                    h3 Uppkopplade spelare
+                    .well.clientwell#clientarea
+            .row
+                .col-md-4.col-md-offset-8
+                    h3 Meddelanden
+                    .well.msgwell#msgarea
+
+
+
+block scripts
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
+    script(src="/javascripts/chatclient.js")

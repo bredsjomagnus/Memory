@@ -37,6 +37,22 @@ function checkCardId(value, expected) {
     assert.equal(res[1], expected[1]);
 }
 
+function checkResetedPosition() {
+    let memorycard = new Memorycard();
+    let res = memorycard.cardpositions;
+
+    memorycard.placeCards(false);
+    assert.deepEqual(res, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+}
+
+function checkShuffledPosition() {
+    let memorycard = new Memorycard();
+    let res = memorycard.cardpositions;
+
+    memorycard.placeCards();
+    assert.notDeepEqual(res, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+}
+
 /**
  * Testsuite
  */
@@ -86,6 +102,18 @@ describe("Check memorycard", function() {
             it("should be have id pair = " + cardid.expected, function() {
                 checkCardId(cardid.value, cardid.expected);
             });
+        });
+    });
+
+    describe("Unshuffled cardpositions", function() {
+        it("should be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]", function() {
+            checkResetedPosition();
+        });
+    });
+
+    describe("Shuffled cardpositions", function() {
+        it("should not be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]", function() {
+            checkShuffledPosition();
         });
     });
 });

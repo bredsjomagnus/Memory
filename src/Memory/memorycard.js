@@ -10,8 +10,10 @@ class Memorycard {
      * @constructor
      */
     constructor() {
-        this.cardvalue  = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];
-        this.numOfCards = this.cardvalue.length;
+        this.cardvalue              = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];
+        this.defaultcardpositions   = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        this.cardpositions          = this.defaultcardpositions;
+        this.numOfCards             = this.cardvalue.length;
     }
 
     /**
@@ -71,6 +73,32 @@ class Memorycard {
         }
 
         return this.cardvalue[cardone] == this.cardvalue[cardtwo];
+    }
+
+    /**
+    * Place memorycards = set this.cardpositions.
+    */
+    placeCards(random = true) {
+        if (random) {
+            this.shuffle();
+        }
+    }
+
+    shuffle() {
+        var n = this.numOfCards,
+            temp,
+            i;
+
+        // While there remain elements to shuffle…
+        while (n) {
+            // Pick a remaining element…
+            i = Math.floor(Math.random() * n--);
+
+            // And swap it with the current element.
+            temp = this.cardpositions[n];
+            this.cardpositions[n] = this.cardpositions[i];
+            this.cardpositions[i] = temp;
+        }
     }
 }
 

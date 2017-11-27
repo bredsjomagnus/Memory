@@ -7,6 +7,9 @@
 var app = require('../app');
 var debug = require('debug')('app:server');
 var http = require('http');
+const WebSocket = require("ws");
+var users = [];
+var usersobject = [];
 
 /**
  * Get port from environment and store in Express.
@@ -20,6 +23,134 @@ app.set('port', port);
  */
 
 var server = http.createServer(app);
+
+
+const wss = new WebSocket.Server({
+    server: server,
+    clientTracking: true, // keep track on connected clients
+});
+
+wss.adduser = (nickname, ws) => {
+    usersobject.push({
+        name: nickname,
+        websocket: ws
+    });
+    users.push(nickname);
+}
+
+wss.dropuser = (ws) => {
+    var deletenick;
+    var founduser = false;
+
+    usersobject.forEach((userobj) => {
+        if (userobj.websocket === ws) {
+            founduser = true;
+            console.log("Drop " + userobj.name);
+            deletenick = userobj.name;
+            users = users.filter( function(deletenick) {
+                return deletenick;
+            });
+            users.splice(users.indexOf(deletenick), 1);
+        }
+    });
+
+    if (founduser) {
+        usersobject = usersobject.filter(function(usr) {
+           return usr.websocket !== ws;
+        });
+    }
+}
+
+/**
+* Takes a nickname and add a figure to make nickname unique.
+*
+* @param {string} incomingnickname, from new user.
+*
+* @return {string} unique nickname.
+*/
+wss.uniquifyname = (incomingnickname) => {
+    var incomingnicknamelength = incomingnickname.length;
+    var stringdiff;
+
+    counter = 2;
+    while(users.indexOf(incomingnickname) !== -1) {
+        if (incomingnickname.length == incomingnicknamelength) {
+            incomingnickname = incomingnickname + counter;
+        } else {
+            stringdiff = incomingnickname.length - incomingnicknamelength;
+            incomingnickname = incomingnickname.slice(0, -stringdiff);
+            incomingnickname = incomingnickname + counter;
+        }
+        counter++;
+    }
+    return incomingnickname;
+}
+
+// Broadcast data to everyone except one self (ws).
+wss.broadcastUsers = (data) => {
+    let clients = 0;
+    wss.clients.forEach((client) => {
+        clients++;
+        client.send(data);
+    });
+    console.log(`Broadcasted users to ${clients} (${wss.clients.size}) clients.`);
+};
+
+wss.answerBackWith = (data, ws) => {
+    ws.send(data);
+};
+
+// Setup for websocket requests.
+// Docs: https://github.com/websockets/ws/blob/master/doc/ws.md
+wss.on("connection", (ws, data) => {
+    console.log("Connection received. Adding client.");
+    ws.on("message", (message) => {
+        jsonmsg = JSON.parse(message);
+        if (jsonmsg.type === 'newuser') {
+            console.log("NEW USER");
+            console.log(jsonmsg.content);
+            var uniquename = wss.uniquifyname(jsonmsg.content);
+            wss.adduser(uniquename, ws);
+            console.log(usersobject);
+
+            uniquemsg = {
+                type: "uniquename",
+                uniquenick: uniquename
+            }
+            wss.answerBackWith(JSON.stringify(uniquemsg), ws);
+            
+            msg = {
+                type: "users",
+                userarray: users
+            }
+            wss.broadcastUsers(JSON.stringify(msg));
+
+
+        } else if (jsonmsg.type === 'deleteuser') {
+            wss.dropuser(ws);
+        } else if (jsonmsg.type === 'clientmsg') {
+            msg = {
+                type: "clientmsg",
+                nick: jsonmsg.nick,
+                content: jsonmsg.content
+            }
+            wss.broadcastUsers(JSON.stringify(msg));
+        }
+    });
+
+    ws.on("error", (error) => {
+        console.log(`Server error: ${error}`);
+    });
+
+    ws.on("close", (code, reason) => {
+        console.log(`Closing connection: ${code} ${reason}`);
+        sendusers = {
+            type: "users",
+            userarray: users
+        }
+        wss.broadcastUsers(JSON.stringify(sendusers));
+    });
+});
 
 /**
  * Listen on provided port, on all network interfaces.
