@@ -1,5 +1,7 @@
 (function () {
+    // var player = new Player('anon');
     let websocket;
+    let gameboard;
     let connect     = document.getElementById("connect");
     let nickname    = document.getElementById('nickname');
     let clientlist  = document.getElementById("clientarea");
@@ -9,9 +11,14 @@
     let clientmessage = document.getElementById("message");
     let close       = document.getElementById("disconnectbtn");
     // var nicknamevalue = document.getElementById('nickname').value;
-    var userparams = {uniquenickname: "anon"};
+    // var userparams = {uniquenickname: "anon"};
     // let protocol    = document.getElementById("protocol");
     // var nicknamevalue = document.getElementById('nickname').value;
+    var player;
+
+    player = {
+        nickname: 'anon'
+    };
 
     /**
     * Check nickname inputfield. If empty disable connectionbtn.
@@ -32,10 +39,10 @@
     function renderClientArea(userarray) {
         var HTMLlist = "";
 
-        console.log("Inne i renderClientArea, uniquenickname = " + userparams.uniquenickname);
+        console.log("Inne i renderClientArea, uniquenickname = " + player.nickname);
         clientlist.innerHTML = "";
         for (var i = 0; i < userarray.length; i++) {
-            if (userarray[i] === userparams.uniquenickname) {
+            if (userarray[i] === player.nickname) {
                 HTMLlist += "<p><strong>"+userarray[i]+"</strong></p>";
             } else {
                 HTMLlist += "<p>"+userarray[i]+"</p>";
@@ -59,7 +66,8 @@
 
     function setuniquename(uniquename) {
         console.log("Setting uniquenickname to " + uniquename);
-        userparams.uniquenickname = uniquename;
+        player.nickname = uniquename;
+        // player.setNickname(uniquename);
     }
 
     /**
@@ -97,10 +105,16 @@
                 console.log(jsonmsg.userarray);
                 renderClientArea(jsonmsg.userarray);
             } else if (jsonmsg.type === 'uniquename') {
-                console.log("Uniquenickname: " + jsonmsg.uniquenick);
+                console.log("Uniquenickname (from server): " + jsonmsg.uniquenick);
                 setuniquename(jsonmsg.uniquenick);
             } else if (jsonmsg.type === 'clientmsg') {
                 addClientMsg(jsonmsg);
+            } else if (jsonmsg.type === 'startgame') {
+                $("#startgame").hide();
+                gameboard = jsonmsg.gameboard;
+                console.log("gameboard params");
+                console.log(gameboard.width);
+                // generate gameboard on clientside.
             }
         };
 
@@ -108,6 +122,7 @@
             console.log("The websocket is now closed.");
             console.log(websocket);
             $("#messageform").hide();
+            $("#startgame").hide();
             $("#connectform").show();
         };
     }, false);
@@ -124,11 +139,12 @@
         } else {
             msg = {
                 type: "clientmsg",
-                nick: userparams.uniquenickname,
+                nick: player.nickname,
                 content: messagetext
             };
             websocket.send(JSON.stringify(msg));
             console.log("Sending message: " + messagetext);
+            clientmessage.value = "";
             // outputLog("You said: " + messagetext);
         }
     });
@@ -149,6 +165,7 @@
             websocket.send(JSON.stringify(msg));
             console.log("Starting up a new game");
             // outputLog("You said: " + messagetext);
+            $("#startgame").hide();
         }
     });
 
@@ -163,7 +180,7 @@
 
         msg = {
             type: 'deleteuser',
-            content: userparams.uniquenickname
+            content: player.nickname
         };
         websocket.send(JSON.stringify(msg));
         clientlist.innerHTML = "";
