@@ -59,7 +59,9 @@
         var card;
         var cardholder;
 
+        document.getElementById("gameboard").innerHTML = "";
         gameboardhtml = document.createElement("table");
+        gameboardhtml.setAttribute("class", "gameboardtable");
 
         for (let y = 0; y < gameboard.height; y++) {
             gameboardrow = document.createElement("tr");
@@ -68,7 +70,13 @@
                 card = document.createElement("button");
                 card.setAttribute("id", "place_"+x+"_"+y);
                 card.setAttribute("class", "cardholder");
-                card.innerHTML = "Kort: "+x+", "+y;
+                if (gameboard.position.indexOf(x+""+y) == -1) {
+                    // card.innerHTML = "Kort: "+x+", "+y;
+                    card.innerHTML = "<img class='cardimage' src='/images/cardbackside.png' />";
+                } else {
+                    card.innerHTML = "Värde: " +
+                    gameboard.cardvalue[gameboard.position.indexOf(x+""+y)];
+                }
                 card.onclick = function() {
                     var msg;
 
@@ -85,7 +93,6 @@
             }
             gameboardhtml.appendChild(gameboardrow);
         }
-
         document.getElementById("gameboard").appendChild(gameboardhtml);
     }
 

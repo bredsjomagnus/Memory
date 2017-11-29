@@ -151,7 +151,7 @@ wss.on("connection", (ws, data) => {
             wss.broadcastUsers(JSON.stringify(msg));
         } else if (jsonmsg.type === 'startgame') {
             gameboard = new Gameboard(4, 3);
-            // memorycard.getCardValue("00");
+            memorycard.placeCards();
             msg = {
                 type: "startgame",
                 gameboard: gameboard
@@ -161,6 +161,17 @@ wss.on("connection", (ws, data) => {
             // jsonmsg.player = spelaren
             // jsonmsg.x = kortets x-koordinat
             // jsonmsg.y = kortets y-koordinat
+            var position = jsonmsg.x+""+jsonmsg.y;
+            var cardvalue = memorycard.getCardValue(position);
+            console.log(jsonmsg.player+" vänder på kort med värde "+cardvalue);
+            gameboard.addPosition(position);
+            gameboard.addCardValue(cardvalue);
+
+            msg = {
+                type: "startgame",
+                gameboard: gameboard
+            }
+            wss.broadcastUsers(JSON.stringify(msg));
         }
     });
 

@@ -16,6 +16,8 @@ class Gameboard {
         this.width = width;
         this.height = height;
         this.numOfCards = width*height;
+        this.position = [];
+        this.cardvalue = [];
     }
 
     getWidth() {
@@ -32,6 +34,14 @@ class Gameboard {
 
     setHeight(height) {
         this.height = height;
+    }
+
+    addPosition(position) {
+        this.position.push(position);
+    }
+
+    addCardValue(cardvalue) {
+        this.cardvalue.push(cardvalue);
     }
 }
 
