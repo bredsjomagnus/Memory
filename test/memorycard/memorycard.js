@@ -29,20 +29,20 @@ function isPair(cardone, cardtwo, expected) {
     assert.equal(res, expected);
 }
 
-function checkCardId(value, expected) {
-    let memorycard = new Memorycard();
-    let res = memorycard.getCardId(value);
-
-    assert.equal(res[0], expected[0]);
-    assert.equal(res[1], expected[1]);
-}
+// function checkCardId(value, expected) {
+//     let memorycard = new Memorycard();
+//     let res = memorycard.getCardId(value);
+//
+//     assert.equal(res[0], expected[0]);
+//     assert.equal(res[1], expected[1]);
+// }
 
 function checkResetedPosition() {
     let memorycard = new Memorycard();
-    let res = memorycard.cardpositions;
+    let res = memorycard.cardvalues;
 
     memorycard.placeCards(false);
-    assert.deepEqual(res, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    assert.deepEqual(res, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]);
 }
 
 function checkShuffledPosition() {
@@ -50,7 +50,7 @@ function checkShuffledPosition() {
     let res = memorycard.cardpositions;
 
     memorycard.placeCards();
-    assert.notDeepEqual(res, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+    assert.notDeepEqual(res, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]);
 }
 
 /**
@@ -58,61 +58,59 @@ function checkShuffledPosition() {
  */
 describe("Check memorycard", function() {
     var values = [
-        {id: -1, value: undefined},
-        {id: 0, value: 1},
-        {id: 1, value: 1},
-        {id: 2, value: 2},
-        {id: 3, value: 2},
-        {id: 4, value: 3},
-        {id: 5, value: 3},
-        {id: 6, value: 4}
+        {position: "00", value: 1},
+        {position: "01", value: 3},
+        {position: "11", value: 3},
+        {position: "12", value: 5},
+        {position: "22", value: 6},
+        {position: "32", value: 6},
     ];
     var pairs = [
-        {cardone: 0, cardtwo: 1, expected: true},
-        {cardone: 1, cardtwo: 2, expected: false},
-        {cardone: -1, cardtwo: 2, expected: undefined},
-        {cardone: 1, cardtwo: -1, expected: undefined},
+        {cardone: "00", cardtwo: "10", expected: true},
+        {cardone: "01", cardtwo: "22", expected: false},
+        {cardone: "02", cardtwo: "12", expected: true},
+        {cardone: "30", cardtwo: "31", expected: false},
     ];
-    var cardids = [
-        {value: 0, expected: [-1, -1]},
-        {value: 300, expected: [-1, -1]},
-        {value: 1, expected: [0, 1]},
-        {value: 2, expected: [2, 3]},
-        {value: 3, expected: [4, 5]}
-    ];
+    // var cardids = [
+    //     {value: 0, expected: [-1, -1]},
+    //     {value: 300, expected: [-1, -1]},
+    //     {value: 1, expected: [0, 1]},
+    //     {value: 2, expected: [2, 3]},
+    //     {value: 3, expected: [4, 5]}
+    // ];
 
     values.forEach(function(test) {
-        describe("Get memorycard value with id " + test.id, function() {
+        describe("Get memorycard value with position " + test.position, function() {
             it("should be value " + test.value, function () {
-                checkMemorycardvalue(test.id, test.value);
+                checkMemorycardvalue(test.position, test.value);
             });
         });
     });
 
     pairs.forEach(function(pair) {
-        describe("Memorycard with id " + pair.cardone + " and " + pair.cardtwo, function() {
+        describe("Memorycard with position " + pair.cardone + " and " + pair.cardtwo, function() {
             it("should be a pair = " + pair.expected, function() {
                 isPair(pair.cardone, pair.cardtwo, pair.expected);
             });
         });
     });
 
-    cardids.forEach(function(cardid) {
-        describe("Memorycard with value " + cardid.value, function() {
-            it("should be have id pair = " + cardid.expected, function() {
-                checkCardId(cardid.value, cardid.expected);
-            });
-        });
-    });
+    // cardids.forEach(function(cardid) {
+    //     describe("Memorycard with value " + cardid.value, function() {
+    //         it("should be have id pair = " + cardid.expected, function() {
+    //             checkCardId(cardid.value, cardid.expected);
+    //         });
+    //     });
+    // });
 
     describe("Unshuffled cardpositions", function() {
-        it("should be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]", function() {
+        it("should be [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]", function() {
             checkResetedPosition();
         });
     });
 
     describe("Shuffled cardpositions", function() {
-        it("should not be [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]", function() {
+        it("should not be [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]", function() {
             checkShuffledPosition();
         });
     });

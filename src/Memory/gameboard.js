@@ -15,6 +15,7 @@ class Gameboard {
     constructor(width, height) {
         this.width = width;
         this.height = height;
+        this.numOfCards = width*height;
     }
 
     getWidth() {

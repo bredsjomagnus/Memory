@@ -15,6 +15,8 @@ var usersobject = [];
 const Gamebrain = require('../src/Memory/gamebrain');
 let gamebrain = new Gamebrain();
 
+const Memorycard = require('../src/Memory/memorycard');
+let memorycard = new Memorycard();
 /**
  * Get port from environment and store in Express.
  */
@@ -148,7 +150,8 @@ wss.on("connection", (ws, data) => {
             }
             wss.broadcastUsers(JSON.stringify(msg));
         } else if (jsonmsg.type === 'startgame') {
-            gameboard = new Gameboard(2, 2);
+            gameboard = new Gameboard(4, 3);
+            // memorycard.getCardValue("00");
             msg = {
                 type: "startgame",
                 gameboard: gameboard
