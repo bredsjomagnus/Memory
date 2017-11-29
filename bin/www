@@ -5,11 +5,11 @@
  */
 
 var app = require('../app');
-const Gameboard = require('../public/javascripts/gameboard');
+const Gameboard = require('../src/Memory/gameboard');
 var debug = require('debug')('app:server');
 var http = require('http');
 const WebSocket = require("ws");
-var users = [];
+// var users = [];
 // var usersobj = {};
 var usersobject = [];
 const Gamebrain = require('../src/Memory/gamebrain');
@@ -39,7 +39,7 @@ wss.adduser = (nickname, ws) => {
         name: nickname,
         websocket: ws
     });
-    users.push(nickname);
+    // users.push(nickname);
 
 }
 
@@ -47,15 +47,17 @@ wss.dropuser = (ws) => {
     var deletenick;
     var founduser = false;
 
+    // Hitta rätt spelare utefter dess 'ws'
+    // och ta bort spelare ur listor.
     usersobject.forEach((userobj) => {
         if (userobj.websocket === ws) {
             founduser = true;
             console.log("Drop " + userobj.name);
             deletenick = userobj.name;
-            users = users.filter( function(deletenick) {
-                return deletenick;
-            });
-            users.splice(users.indexOf(deletenick), 1);
+            // users = users.filter( function(deletenick) {
+            //     return deletenick;
+            // });
+            // users.splice(users.indexOf(deletenick), 1);
             gamebrain.dropPlayer(deletenick);
         }
     });
@@ -78,8 +80,10 @@ wss.dropuser = (ws) => {
 wss.uniquifyname = (incomingnickname) => {
     var incomingnicknamelength = incomingnickname.length;
     var stringdiff;
+    var users = gamebrain.getPlayersNicks();
 
     counter = 2;
+    // while(users.indexOf(incomingnickname) !== -1) {
     while(users.indexOf(incomingnickname) !== -1) {
         if (incomingnickname.length == incomingnicknamelength) {
             incomingnickname = incomingnickname + counter;
@@ -116,33 +120,24 @@ wss.on("connection", (ws, data) => {
         if (jsonmsg.type === 'newuser') {
             var uniquename = wss.uniquifyname(jsonmsg.content);
             wss.adduser(uniquename, ws);
-            console.log(usersobject);
-
+            // console.log(usersobject);
             playercolor = gamebrain.setPlayerColor(uniquename);
-
-            console.log("GameBrains playernicks");
-            console.log(gamebrain.getPlayersNicks());
-
-            console.log("GameBrains playercolors");
-            console.log(gamebrain.getPlayersColors());
-
+            // console.log("GameBrains playernicks");
+            // console.log(gamebrain.getPlayersNicks());
+            // console.log("GameBrains playercolors");
+            // console.log(gamebrain.getPlayersColors());
             uniquemsg = {
                 type: "uniquename",
                 uniquenick: uniquename,
                 colorclass: playercolor
             }
             wss.answerBackWith(JSON.stringify(uniquemsg), ws);
-
-
-
             msg = {
                 type: "users",
                 userarray: gamebrain.getPlayersNicks(),
                 userscolors: gamebrain.getPlayersColors()
             }
             wss.broadcastUsers(JSON.stringify(msg));
-
-
         } else if (jsonmsg.type === 'deleteuser') {
             wss.dropuser(ws);
         } else if (jsonmsg.type === 'clientmsg') {
@@ -153,12 +148,16 @@ wss.on("connection", (ws, data) => {
             }
             wss.broadcastUsers(JSON.stringify(msg));
         } else if (jsonmsg.type === 'startgame') {
-            gameboard = new Gameboard(4, 4);
+            gameboard = new Gameboard(2, 2);
             msg = {
                 type: "startgame",
                 gameboard: gameboard
             }
             wss.broadcastUsers(JSON.stringify(msg));
+        } else if (jsonmsg.type === "clickingcard") {
+            // jsonmsg.player = spelaren
+            // jsonmsg.x = kortets x-koordinat
+            // jsonmsg.y = kortets y-koordinat
         }
     });
 
@@ -168,11 +167,12 @@ wss.on("connection", (ws, data) => {
 
     ws.on("close", (code, reason) => {
         console.log(`Closing connection: ${code} ${reason}`);
-        sendusers = {
+        msg = {
             type: "users",
-            userarray: users
+            userarray: gamebrain.getPlayersNicks(),
+            userscolors: gamebrain.getPlayersColors()
         }
-        wss.broadcastUsers(JSON.stringify(sendusers));
+        wss.broadcastUsers(JSON.stringify(msg));
     });
 });
 

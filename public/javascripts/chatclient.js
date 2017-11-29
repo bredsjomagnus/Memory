@@ -1,7 +1,7 @@
 (function () {
     // var player = new Player('anon');
     let websocket;
-    let gameboard;
+    // let gameboard;
     let connect     = document.getElementById("connect");
     let nickname    = document.getElementById('nickname');
     let clientlist  = document.getElementById("clientarea");
@@ -53,6 +53,42 @@
         clientlist.innerHTML = HTMLlist;
     }
 
+    function renderGameBoard(gameboard) {
+        var gameboardhtml;
+        var gameboardrow;
+        var card;
+        var cardholder;
+
+        gameboardhtml = document.createElement("table");
+
+        for (let y = 0; y < gameboard.height; y++) {
+            gameboardrow = document.createElement("tr");
+            for (let x = 0; x < gameboard.width; x++) {
+                cardholder = document.createElement("td");
+                card = document.createElement("button");
+                card.setAttribute("id", "place_"+x+"_"+y);
+                card.setAttribute("class", "cardholder");
+                card.innerHTML = "Kort: "+x+", "+y;
+                card.onclick = function() {
+                    var msg;
+
+                    msg = {
+                        type: "clickingcard",
+                        player: player.nickname,
+                        x: x,
+                        y: y
+                    };
+                    websocket.send(JSON.stringify(msg));
+                };
+                cardholder.appendChild(card);
+                gameboardrow.appendChild(cardholder);
+            }
+            gameboardhtml.appendChild(gameboardrow);
+        }
+
+        document.getElementById("gameboard").appendChild(gameboardhtml);
+    }
+
     function addClientMsg(jsonmsg) {
         let now = new Date();
         let timestamp = now.toLocaleTimeString();
@@ -81,7 +117,7 @@
         websocket = new WebSocket('ws://localhost:8001/');
         websocket.onopen = function() {
             console.log("The websocket is now open.");
-            console.log(websocket);
+            // console.log(websocket);
             var msg;
 
             msg = {
@@ -96,16 +132,16 @@
 
         websocket.onmessage = function(event) {
             console.log("Receiving message: " + event.data);
-            console.log(event);
-            console.log(websocket);
+            // console.log(event);
+            // console.log(websocket);
             var jsonmsg;
 
             jsonmsg = JSON.parse(event.data);
-            console.log(jsonmsg.type);
+            // console.log(jsonmsg.type);
             if (jsonmsg.type === 'users') {
-                console.log("renderClientArea");
-                console.log("jsonmsg.userarray: ");
-                console.log(jsonmsg.userarray);
+                // console.log("renderClientArea");
+                // console.log("jsonmsg.userarray: ");
+                // console.log(jsonmsg.userarray);
                 renderClientArea(jsonmsg);
             } else if (jsonmsg.type === 'uniquename') {
                 console.log("Uniquenickname (from server): " + jsonmsg.uniquenick);
@@ -114,16 +150,16 @@
                 addClientMsg(jsonmsg);
             } else if (jsonmsg.type === 'startgame') {
                 $("#startgame").hide();
-                gameboard = jsonmsg.gameboard;
-                console.log("gameboard params");
-                console.log(gameboard.width);
+                // console.log("gameboard params");
+                // console.log(gameboard.width);
                 // generate gameboard on clientside.
+                renderGameBoard(jsonmsg.gameboard);
             }
         };
 
         websocket.onclose = function() {
             console.log("The websocket is now closed.");
-            console.log(websocket);
+            // console.log(websocket);
             $("#messageform").hide();
             $("#startgame").hide();
             $("#connectform").show();
@@ -178,7 +214,7 @@
      * What to do when user clicks Close connection.
      */
     close.addEventListener("click", function(/*event*/) {
-        console.log("Closing websocket.");
+        console.log("Closing websocket for %s.", player.nickname);
         var msg;
 
         msg = {

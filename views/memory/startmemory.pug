@@ -6,7 +6,7 @@ block main
             h1 Anslut till spelservern
 
             .row
-                .col-md-6
+                .col-md-12
                     <form id='connectform'>
                         <div class="input-group">
                             <input class='form-control' style=width:98%; type='text' id='nickname' placeholder='nickname'>
@@ -25,16 +25,21 @@ block main
                             </span>
                         </div>
                     </form>
+
+                div.gameboard#gameboard
+
             .row
                 .col-md-10
                     <button id='startgame' class='startgame'>Starta nytt spel</button>
 
+
+
             .row
-                .col-md-4.col-md-offset-8
+                .col-md-4
                     h3 Uppkopplade spelare
                     .well.clientwell#clientarea
             .row
-                .col-md-4.col-md-offset-8
+                .col-md-4
                     h3 Meddelanden
                     .well.msgwell#msgarea
 
@@ -42,6 +47,5 @@ block main
 
 block scripts
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
-    script(src="/javascripts/gameboard.js")
     script(src="/javascripts/player.js")
     script(src="/javascripts/chatclient.js")
