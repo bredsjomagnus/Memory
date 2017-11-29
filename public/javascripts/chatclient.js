@@ -17,7 +17,8 @@
     var player;
 
     player = {
-        nickname: 'anon'
+        nickname: 'anon',
+        colorclass: 'blackplayer'
     };
 
     /**
@@ -36,16 +37,17 @@
     // Checking nickname inputfield when keyup or when focusout
     $('#nickname').keyup(doCheck).focusout(doCheck);
 
-    function renderClientArea(userarray) {
+    function renderClientArea(jsonmsg) {
         var HTMLlist = "";
 
         console.log("Inne i renderClientArea, uniquenickname = " + player.nickname);
         clientlist.innerHTML = "";
-        for (var i = 0; i < userarray.length; i++) {
-            if (userarray[i] === player.nickname) {
-                HTMLlist += "<p><strong>"+userarray[i]+"</strong></p>";
+        for (var i = 0; i < jsonmsg.userarray.length; i++) {
+            if (jsonmsg.userarray[i] === player.nickname) {
+                HTMLlist += "<p class="+jsonmsg.userscolors[i]+
+                "><strong>"+jsonmsg.userarray[i]+"</strong></p>";
             } else {
-                HTMLlist += "<p>"+userarray[i]+"</p>";
+                HTMLlist += "<p class="+jsonmsg.userscolors[i]+">"+jsonmsg.userarray[i]+"</p>";
             }
         }
         clientlist.innerHTML = HTMLlist;
@@ -64,9 +66,10 @@
         output.appendChild(htmlmsg);
     }
 
-    function setuniquename(uniquename) {
-        console.log("Setting uniquenickname to " + uniquename);
-        player.nickname = uniquename;
+    function setPlayerparams(jsonmsg) {
+        console.log("Setting uniquenickname to " + jsonmsg.uniquenick);
+        player.nickname = jsonmsg.uniquenick;
+        player.colorclass = jsonmsg.colorclass;
         // player.setNickname(uniquename);
     }
 
@@ -103,10 +106,10 @@
                 console.log("renderClientArea");
                 console.log("jsonmsg.userarray: ");
                 console.log(jsonmsg.userarray);
-                renderClientArea(jsonmsg.userarray);
+                renderClientArea(jsonmsg);
             } else if (jsonmsg.type === 'uniquename') {
                 console.log("Uniquenickname (from server): " + jsonmsg.uniquenick);
-                setuniquename(jsonmsg.uniquenick);
+                setPlayerparams(jsonmsg);
             } else if (jsonmsg.type === 'clientmsg') {
                 addClientMsg(jsonmsg);
             } else if (jsonmsg.type === 'startgame') {

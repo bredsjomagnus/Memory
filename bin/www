@@ -10,7 +10,10 @@ var debug = require('debug')('app:server');
 var http = require('http');
 const WebSocket = require("ws");
 var users = [];
+// var usersobj = {};
 var usersobject = [];
+const Gamebrain = require('../src/Memory/gamebrain');
+let gamebrain = new Gamebrain();
 
 /**
  * Get port from environment and store in Express.
@@ -37,6 +40,7 @@ wss.adduser = (nickname, ws) => {
         websocket: ws
     });
     users.push(nickname);
+
 }
 
 wss.dropuser = (ws) => {
@@ -52,6 +56,7 @@ wss.dropuser = (ws) => {
                 return deletenick;
             });
             users.splice(users.indexOf(deletenick), 1);
+            gamebrain.dropPlayer(deletenick);
         }
     });
 
@@ -60,6 +65,7 @@ wss.dropuser = (ws) => {
            return usr.websocket !== ws;
         });
     }
+
 }
 
 /**
@@ -108,21 +114,31 @@ wss.on("connection", (ws, data) => {
     ws.on("message", (message) => {
         jsonmsg = JSON.parse(message);
         if (jsonmsg.type === 'newuser') {
-            console.log("NEW USER");
-            console.log(jsonmsg.content);
             var uniquename = wss.uniquifyname(jsonmsg.content);
             wss.adduser(uniquename, ws);
             console.log(usersobject);
 
+            playercolor = gamebrain.setPlayerColor(uniquename);
+
+            console.log("GameBrains playernicks");
+            console.log(gamebrain.getPlayersNicks());
+
+            console.log("GameBrains playercolors");
+            console.log(gamebrain.getPlayersColors());
+
             uniquemsg = {
                 type: "uniquename",
-                uniquenick: uniquename
+                uniquenick: uniquename,
+                colorclass: playercolor
             }
             wss.answerBackWith(JSON.stringify(uniquemsg), ws);
 
+
+
             msg = {
                 type: "users",
-                userarray: users
+                userarray: gamebrain.getPlayersNicks(),
+                userscolors: gamebrain.getPlayersColors()
             }
             wss.broadcastUsers(JSON.stringify(msg));
 
