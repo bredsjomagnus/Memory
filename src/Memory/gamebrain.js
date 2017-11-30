@@ -23,7 +23,10 @@ class Gamebrain {
         ];
         this.usedcolors = [];
         this.players = new Map();
-        this.playerturn = 0;
+        this.playerinturnmarker = 0; // for moving forward to next player in turn.
+        this.playerinturn; // nickname of player in turn.
+        this.numberofplayermoves = 0; // number of moves player in turn has done.
+        this.cardvalues = []; // for storing flipped cards values.
     }
 
     /**
@@ -36,14 +39,66 @@ class Gamebrain {
         this.players.set(player, color);
     }
 
-    setActivePlayer(firstround = false) {
-        if (firstround) {
-            var players = this.getPlayersNicks();
+    makeMove() {
+        this.numberofplayermoves += 1;
+        console.log("this.numberofplayermoves: " + this.numberofplayermoves);
+    }
 
-            this.playerturn = Math.floor(Math.random() * players.length);
+    setCardValue(cardvalue) {
+        // finns det inget kort här så lägga bara till
+        // finns det redan ett kort kolla om det har samma värde.
+        // har det samma värde är det ett par och numberofplayermoves nollställs
+        // man tar även bort alla kort i cardvalues
+        // är det inte ett par nollställs inte inte numberofplayers men cardvalues töms.
+        var cardvalues = this.cardvalues;
+
+        if (cardvalues.length === 0) {
+            this.cardvalues.push(cardvalue);
         } else {
-            this.playerturn += 1;
+            // det finns kort i cardvalues
+            if (cardvalues.indexOf(cardvalue) != -1) {
+                // det är samma värde som nyinkomna.
+                this.numberofplayermoves = 0;
+            }
+            this.cardvalues = [];
         }
+    }
+
+    /**
+    * Set and get player in turn.
+    *
+    * @param {boolean} firstround - set to false by default.
+    *
+    * @return {string} nickname of player who´s turn it is.
+    */
+    setActivePlayer(firstround = false) {
+        var players = this.getPlayersNicks();
+        var numberofplayermoves = this.numberofplayermoves;
+
+        console.log("numberofplayermoves: " + numberofplayermoves);
+        if (firstround) {
+            this.playerinturnmarker = Math.floor(Math.random() * players.length);
+            this.playerinturn = players[this.playerinturnmarker];
+            this.numberofplayermoves = 0;
+            console.log("firstround - this.playerinturnmarker: " + this.playerinturnmarker);
+            console.log("firstround - this playerinturn: " + this.playerinturn);
+        } else {
+            if (numberofplayermoves == 2) {
+                console.log("Selecting new active player.");
+                var playerinturnmarker = this.playerinturnmarker;
+
+                if (playerinturnmarker < players.length-1) {
+                    this.playerinturnmarker += 1;
+                } else {
+                    this.playerinturnmarker = 0;
+                }
+                // console.log("this.playerinturnmarker: " + this.playerinturnmarker);
+                this.playerinturn = players[this.playerinturnmarker];
+                // console.log("New player in turn: " + this.playerinturn);
+                this.numberofplayermoves = 0;
+            }
+        }
+        return this.playerinturn;
     }
 
     dropPlayer(player) {

@@ -18,6 +18,7 @@ class Gameboard {
         this.numOfCards = width*height;
         this.position = []; // of cards that has flipped
         this.cardvalue = []; // of cards that has flipped
+        this.activeplayer; // nickname of player who´s turn it is
     }
 
     getWidth() {
@@ -42,6 +43,10 @@ class Gameboard {
 
     addCardValue(cardvalue) {
         this.cardvalue.push(cardvalue);
+    }
+
+    setActivePlayer(player) {
+        this.activeplayer = player;
     }
 }
 

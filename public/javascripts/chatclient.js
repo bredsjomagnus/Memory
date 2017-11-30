@@ -59,6 +59,8 @@
         var card;
         var cardholder;
 
+        console.log("active player: " + gameboard.activeplayer);
+
         document.getElementById("gameboard").innerHTML = "";
         gameboardhtml = document.createElement("table");
         gameboardhtml.setAttribute("class", "gameboardtable");
@@ -78,17 +80,19 @@
                     // card.innerHTML = "Värde: " +
                     // gameboard.cardvalue[gameboard.position.indexOf(x+""+y)];
                 }
-                card.onclick = function() {
-                    var msg;
+                if (gameboard.activeplayer == player.nickname) {
+                    card.onclick = function() {
+                        var msg;
 
-                    msg = {
-                        type: "clickingcard",
-                        player: player.nickname,
-                        x: x,
-                        y: y
+                        msg = {
+                            type: "clickingcard",
+                            player: player.nickname,
+                            x: x,
+                            y: y
+                        };
+                        websocket.send(JSON.stringify(msg));
                     };
-                    websocket.send(JSON.stringify(msg));
-                };
+                }
                 cardholder.appendChild(card);
                 gameboardrow.appendChild(cardholder);
             }
@@ -103,11 +107,14 @@
         var htmlmsg;
         var nick = jsonmsg.nick;
         var content = jsonmsg.content;
+        var chatwindow = document.getElementById('chatwindow');
 
         htmlmsg = document.createElement('div');
         htmlmsg.className = "well clientmsgwell";
-        htmlmsg.innerHTML = "<p>"+`${timestamp}`+" [<strong>"+nick+"</strong>]: "+content+"</p>";
-        output.appendChild(htmlmsg);
+        htmlmsg.innerHTML = "<p>"+`${timestamp}`+" [<strong>"+nick+"</strong>]:<br>"+content+"</p>";
+        chatwindow.appendChild(htmlmsg);
+        chatwindow.scrollTop = chatwindow.scrollHeight;
+        // output.appendChild(htmlmsg);
     }
 
     function setPlayerparams(jsonmsg) {

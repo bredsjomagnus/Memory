@@ -109,7 +109,7 @@ wss.on("connection", (ws, data) => {
                 colorclass: playercolor
             }
             wss.answerBackWith(JSON.stringify(uniquemsg), ws);
-            
+
             msg = {
                 type: "users",
                 userarray: gamebrain.getPlayersNicks(),
@@ -126,8 +126,11 @@ wss.on("connection", (ws, data) => {
             }
             wss.broadcastUsers(JSON.stringify(msg));
         } else if (jsonmsg.type === 'startgame') {
+            var playerinturn;
             gameboard = new Gameboard(4, 3);
-            memorycard.placeCards();
+            memorycard.placeCards(); // shuffle and place cards on gameboard
+            playerinturn = gamebrain.setActivePlayer(true); // true for first turn
+            gameboard.setActivePlayer(playerinturn);
             msg = {
                 type: "startgame",
                 gameboard: gameboard
@@ -139,9 +142,15 @@ wss.on("connection", (ws, data) => {
             // jsonmsg.y = kortets y-koordinat
             var position = jsonmsg.x+""+jsonmsg.y;
             var cardvalue = memorycard.getCardValue(position);
+
             console.log(jsonmsg.player+" vänder på kort med värde "+cardvalue);
             gameboard.addPosition(position);
             gameboard.addCardValue(cardvalue);
+
+            gamebrain.makeMove(); // tell gamebrain that move has been done.
+            gamebrain.setCardValue(cardvalue); // tell gamebrain to remember flipped card
+            playerinturn = gamebrain.setActivePlayer();
+            gameboard.setActivePlayer(playerinturn);
 
             msg = {
                 type: "startgame",

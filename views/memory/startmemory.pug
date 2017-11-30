@@ -26,24 +26,20 @@ block main
                         </div>
                     </form>
 
-                div.gameboard#gameboard
-
             .row
-                .col-md-10
-                    <button id='startgame' class='startgame'>Starta nytt spel</button>
+                div.sidechatdiv.col-md-3
+                    .row
+                        .col-md-12
+                            h3 Spelare
+                            .well.clientwell#clientarea
+                    .row
+                        h3 Meddelanden
+                        .col-md-12.chatwindow#chatwindow
 
+                            .well.msgwell#msgarea
 
-
-            .row
-                .col-md-4
-                    h3 Uppkopplade spelare
-                    .well.clientwell#clientarea
-            .row
-                .col-md-4
-                    h3 Meddelanden
-                    .well.msgwell#msgarea
-
-
+                div.gameboard.col-md-6#gameboard
+                    <button id='startgame' class='startgame btn btn-primary'>Starta nytt spel</button>
 
 block scripts
     script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js", integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa", crossorigin="anonymous")
