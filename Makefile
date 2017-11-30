@@ -130,7 +130,7 @@ check: check-tools-js #check-tools-bash check-tools-php
 
 # target: test               - Run all tests.
 .PHONY: test
-test: htmlhint jscs eslint lesshint jsunittest #csslint stylelint
+test: htmlhint jscs eslint-fix lesshint jsunittest #csslint stylelint
 	@$(call HELPTEXT,$@)
 	[ ! -f composer.json ] || composer validate
 
@@ -204,7 +204,7 @@ tag-prepare:
 .PHONY: setup-tools-js
 setup-tools-js:
 	@$(call HELPTEXT,$@)
-	npm install --save-dev htmlhint csslint stylelint jscs eslint eslint-plugin-react jsonlint js-yaml html-minifier clean-css-cli uglify-js mocha nyc coveralls codecov lesshint
+	npm install --save-dev htmlhint csslint stylelint jscs eslint-fix eslint-plugin-react jsonlint js-yaml html-minifier clean-css-cli uglify-js mocha nyc coveralls codecov lesshint
 
 
 
@@ -286,11 +286,11 @@ jscs:
 
 
 
-# target: eslint             - JavaScript linter.
-.PHONY: eslint
-eslint:
-	@$(call HELPTEXT,$@)
-	[ ! -f .eslintrc.json ] || $(ESLINT) .
+# # target: eslint             - JavaScript linter.
+# .PHONY: eslint
+# eslint:
+# 	@$(call HELPTEXT,$@)
+# 	[ ! -f .eslintrc.json ] || $(ESLINT) .
 
 
 

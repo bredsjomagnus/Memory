@@ -45,6 +45,11 @@ class Gameboard {
         this.cardvalue.push(cardvalue);
     }
 
+    resetCards() {
+        this.position = [];
+        this.cardvalue = [];
+    }
+
     setActivePlayer(player) {
         this.activeplayer = player;
     }

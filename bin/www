@@ -133,7 +133,10 @@ wss.on("connection", (ws, data) => {
             gameboard.setActivePlayer(playerinturn);
             msg = {
                 type: "startgame",
-                gameboard: gameboard
+                gameboard: gameboard,
+                playersturn: playerinturn,
+                userarray: gamebrain.getPlayersNicks(),
+                userscolors: gamebrain.getPlayersColors()
             }
             wss.broadcastUsers(JSON.stringify(msg));
         } else if (jsonmsg.type === "clickingcard") {
@@ -142,6 +145,7 @@ wss.on("connection", (ws, data) => {
             // jsonmsg.y = kortets y-koordinat
             var position = jsonmsg.x+""+jsonmsg.y;
             var cardvalue = memorycard.getCardValue(position);
+            var turnback = false;
 
             console.log(jsonmsg.player+" vänder på kort med värde "+cardvalue);
             gameboard.addPosition(position);
@@ -149,12 +153,27 @@ wss.on("connection", (ws, data) => {
 
             gamebrain.makeMove(); // tell gamebrain that move has been done.
             gamebrain.setCardValue(cardvalue); // tell gamebrain to remember flipped card
-            playerinturn = gamebrain.setActivePlayer();
-            gameboard.setActivePlayer(playerinturn);
 
+            if (gamebrain.numberofplayermoves == 2) {
+                turnback = true;
+                // gameboard.resetCards();
+                playerinturn = false;
+                gameboard.setActivePlayer(playerinturn);
+            } else {
+                playerinturn = gamebrain.setActivePlayer();
+                gameboard.setActivePlayer(playerinturn);
+            }
+
+
+
+            // i detta msg måste även gamla uppsättningen av spelbrädet skickas med så användaren kan se
             msg = {
                 type: "startgame",
-                gameboard: gameboard
+                gameboard: gameboard,
+                playersturn: playerinturn,
+                userarray: gamebrain.getPlayersNicks(),
+                userscolors: gamebrain.getPlayersColors(),
+                turnback: turnback
             }
             wss.broadcastUsers(JSON.stringify(msg));
         }

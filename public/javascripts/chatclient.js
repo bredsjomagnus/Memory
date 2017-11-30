@@ -39,15 +39,26 @@
 
     function renderClientArea(jsonmsg) {
         var HTMLlist = "";
+        var yourturn = "";
 
         console.log("Inne i renderClientArea, uniquenickname = " + player.nickname);
+
+        if (jsonmsg.playersturn == undefined) {
+            yourturn = "";
+        }
+
         clientlist.innerHTML = "";
         for (var i = 0; i < jsonmsg.userarray.length; i++) {
+            if (jsonmsg.userarray[i] === jsonmsg.playersturn) {
+                yourturn = "- din tur";
+            } else {
+                yourturn = "";
+            }
             if (jsonmsg.userarray[i] === player.nickname) {
                 HTMLlist += "<p class="+jsonmsg.userscolors[i]+
-                "><strong>"+jsonmsg.userarray[i]+"</strong></p>";
+                "><strong>"+jsonmsg.userarray[i]+"</strong> "+yourturn+"</p>";
             } else {
-                HTMLlist += "<p class="+jsonmsg.userscolors[i]+">"+jsonmsg.userarray[i]+"</p>";
+                HTMLlist += "<p class="+jsonmsg.userscolors[i]+">"+jsonmsg.userarray[i]+" "+yourturn+"</p>";
             }
         }
         clientlist.innerHTML = HTMLlist;
@@ -168,7 +179,15 @@
                 // console.log("gameboard params");
                 // console.log(gameboard.width);
                 // generate gameboard on clientside.
-                renderGameBoard(jsonmsg.gameboard);
+                if (jsonmsg.turnback) {
+                    console.log("turnback: " + jsonmsg.turnback);
+                    $("#nextturnbtn").show();
+                    renderGameBoard(jsonmsg.gameboard);
+                    // here i need to render old setting first before new setting is rendered.
+                } else {
+                    renderGameBoard(jsonmsg.gameboard);
+                    renderClientArea(jsonmsg);
+                }
             }
         };
 
