@@ -72,32 +72,7 @@ wss.dropuser = (ws) => {
 
 }
 
-/**
-* Takes a nickname and add a figure to make nickname unique.
-*
-* @param {string} incomingnickname, from new user.
-*
-* @return {string} unique nickname.
-*/
-wss.uniquifyname = (incomingnickname) => {
-    var incomingnicknamelength = incomingnickname.length;
-    var stringdiff;
-    var users = gamebrain.getPlayersNicks();
 
-    counter = 2;
-    // while(users.indexOf(incomingnickname) !== -1) {
-    while(users.indexOf(incomingnickname) !== -1) {
-        if (incomingnickname.length == incomingnicknamelength) {
-            incomingnickname = incomingnickname + counter;
-        } else {
-            stringdiff = incomingnickname.length - incomingnicknamelength;
-            incomingnickname = incomingnickname.slice(0, -stringdiff);
-            incomingnickname = incomingnickname + counter;
-        }
-        counter++;
-    }
-    return incomingnickname;
-}
 
 // Broadcast data to everyone except one self (ws).
 wss.broadcastUsers = (data) => {
@@ -120,7 +95,7 @@ wss.on("connection", (ws, data) => {
     ws.on("message", (message) => {
         jsonmsg = JSON.parse(message);
         if (jsonmsg.type === 'newuser') {
-            var uniquename = wss.uniquifyname(jsonmsg.content);
+            var uniquename = gamebrain.uniquifyname(jsonmsg.content);
             wss.adduser(uniquename, ws);
             // console.log(usersobject);
             playercolor = gamebrain.setPlayerColor(uniquename);
@@ -134,6 +109,7 @@ wss.on("connection", (ws, data) => {
                 colorclass: playercolor
             }
             wss.answerBackWith(JSON.stringify(uniquemsg), ws);
+            
             msg = {
                 type: "users",
                 userarray: gamebrain.getPlayersNicks(),

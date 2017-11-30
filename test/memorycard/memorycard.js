@@ -42,7 +42,13 @@ function checkResetedPosition() {
     let res = memorycard.cardvalues;
 
     memorycard.placeCards(false);
-    assert.deepEqual(res, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]);
+    assert.deepEqual(res, [
+        "alpaca.png", "alpaca.png",
+        "giraff.png", "giraff.png",
+        "monkeys.png", "monkeys.png",
+        "panda.png", "panda.png",
+        "puppy.png", "puppy.png",
+        "ram.png", "ram.png"]);
 }
 
 function checkShuffledPosition() {
@@ -50,7 +56,13 @@ function checkShuffledPosition() {
     let res = memorycard.cardpositions;
 
     memorycard.placeCards();
-    assert.notDeepEqual(res, [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]);
+    assert.notDeepEqual(res, [
+        "alpaca.png", "alpaca.png",
+        "giraff.png", "giraff.png",
+        "monkeys.png", "monkeys.png",
+        "panda.png", "panda.png",
+        "puppy.png", "puppy.png",
+        "ram.png", "ram.png"]);
 }
 
 /**
@@ -58,12 +70,12 @@ function checkShuffledPosition() {
  */
 describe("Check memorycard", function() {
     var values = [
-        {position: "00", value: 1},
-        {position: "01", value: 3},
-        {position: "11", value: 3},
-        {position: "12", value: 5},
-        {position: "22", value: 6},
-        {position: "32", value: 6},
+        {position: "00", value: "alpaca.png"},
+        {position: "01", value: "monkeys.png"},
+        {position: "11", value: "monkeys.png"},
+        {position: "12", value: "puppy.png"},
+        {position: "22", value: "ram.png"},
+        {position: "32", value: "ram.png"},
     ];
     var pairs = [
         {cardone: "00", cardtwo: "10", expected: true},
@@ -104,13 +116,13 @@ describe("Check memorycard", function() {
     // });
 
     describe("Unshuffled cardpositions", function() {
-        it("should be [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]", function() {
+        it("should be default setting", function() {
             checkResetedPosition();
         });
     });
 
     describe("Shuffled cardpositions", function() {
-        it("should not be [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6]", function() {
+        it("should not be default setting", function() {
             checkShuffledPosition();
         });
     });

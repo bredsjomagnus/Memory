@@ -11,11 +11,20 @@ class Memorycard {
      */
     constructor() {
         this.cards = new Map([
-            ["00", 1], ["10", 1], ["20", 2], ["30", 2],
-            ["01", 3], ["11", 3], ["21", 4], ["31", 4],
-            ["02", 5], ["12", 5], ["22", 6], ["32", 6]
+            ["00", "alpaca.png"], ["10", "alpaca.png"],
+            ["20", "giraff.png"], ["30", "giraff.png"],
+            ["01", "monkeys.png"], ["11", "monkeys.png"],
+            ["21", "panda.png"], ["31", "panda.png"],
+            ["02", "puppy.png"], ["12", "puppy.png"],
+            ["22", "ram.png"], ["32", "ram.png"]
         ]);
-        this.cardvalues = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];
+        this.cardvalues = [
+            "alpaca.png", "alpaca.png",
+            "giraff.png", "giraff.png",
+            "monkeys.png", "monkeys.png",
+            "panda.png", "panda.png",
+            "puppy.png", "puppy.png",
+            "ram.png", "ram.png"];
         this.positions = [
             "00", "10", "20", "30",
             "01", "11", "21", "31",

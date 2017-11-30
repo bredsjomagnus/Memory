@@ -16,8 +16,8 @@ class Gameboard {
         this.width = width;
         this.height = height;
         this.numOfCards = width*height;
-        this.position = [];
-        this.cardvalue = [];
+        this.position = []; // of cards that has flipped
+        this.cardvalue = []; // of cards that has flipped
     }
 
     getWidth() {

@@ -72,10 +72,11 @@
                 card.setAttribute("class", "cardholder");
                 if (gameboard.position.indexOf(x+""+y) == -1) {
                     // card.innerHTML = "Kort: "+x+", "+y;
-                    card.innerHTML = "<img class='cardimage' src='/images/cardbackside.png' />";
+                    card.innerHTML = "<img class='cardimage' src='/images/memorycards/cardbackside.png' />";
                 } else {
-                    card.innerHTML = "Värde: " +
-                    gameboard.cardvalue[gameboard.position.indexOf(x+""+y)];
+                    card.innerHTML = "<img class='cardimage' src='/images/memorycards/"+gameboard.cardvalue[gameboard.position.indexOf(x+""+y)]+"' />";
+                    // card.innerHTML = "Värde: " +
+                    // gameboard.cardvalue[gameboard.position.indexOf(x+""+y)];
                 }
                 card.onclick = function() {
                     var msg;
