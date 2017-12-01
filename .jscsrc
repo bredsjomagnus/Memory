@@ -96,7 +96,7 @@
 	"requirePaddingNewLinesAfterUseStrict": true,
 	"validateParameterSeparator": ", ",
 
-	"maximumLineLength": 100,
+	"maximumLineLength": 200,
 	"requireLineBreakAfterVariableAssignment": true,
 	"requireAlignedMultilineParams": true,
 	"requireCommaBeforeLineBreak": true,

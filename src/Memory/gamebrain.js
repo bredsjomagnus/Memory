@@ -80,16 +80,16 @@ class Gamebrain {
         var players = this.getPlayersNicks();
         var numberofplayermoves = this.numberofplayermoves;
 
-        console.log("numberofplayermoves: " + numberofplayermoves);
+        // console.log("numberofplayermoves: " + numberofplayermoves);
         if (firstround) {
             this.playerinturnmarker = Math.floor(Math.random() * players.length);
             this.playerinturn = players[this.playerinturnmarker];
             this.numberofplayermoves = 0;
-            console.log("firstround - this.playerinturnmarker: " + this.playerinturnmarker);
-            console.log("firstround - this playerinturn: " + this.playerinturn);
+            // console.log("firstround - this.playerinturnmarker: " + this.playerinturnmarker);
+            // console.log("firstround - this playerinturn: " + this.playerinturn);
         } else {
             if (numberofplayermoves == 2) {
-                console.log("Selecting new active player.");
+                // console.log("Selecting new active player.");
                 var playerinturnmarker = this.playerinturnmarker;
 
                 if (playerinturnmarker < players.length-1) {
