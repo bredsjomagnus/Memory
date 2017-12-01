@@ -23,6 +23,8 @@ class Gamebrain {
         ];
         this.usedcolors = [];
         this.players = new Map();
+        this.playersscore = new Map(); // filles with players and cardvalues of pairs
+        this.paircheck = ""; // temp holder for checking if pair fliped.
         this.playerinturnmarker = 0; // for moving forward to next player in turn.
         this.playerinturn; // nickname of player in turn.
         this.numberofplayermoves = 0; // number of moves player in turn has done.
@@ -44,7 +46,7 @@ class Gamebrain {
         console.log("this.numberofplayermoves: " + this.numberofplayermoves);
     }
 
-    setCardValue(cardvalue) {
+    setCardValue(player, colorclass, cardvalue) {
         // finns det inget kort här så lägga bara till
         // finns det redan ett kort kolla om det har samma värde.
         // har det samma värde är det ett par och numberofplayermoves nollställs
@@ -59,6 +61,9 @@ class Gamebrain {
             if (cardvalues.indexOf(cardvalue) != -1) {
                 // det är samma värde som nyinkomna.
                 this.numberofplayermoves = 0;
+                // lägger till spelares colorclass med kort i poänglistan.
+                this.playersscore.set(player, cardvalue);
+                this.paircheck = colorclass;
             }
             this.cardvalues = [];
         }
@@ -162,6 +167,21 @@ class Gamebrain {
 
     getPlayersColors() {
         return [...this.players.values()];
+    }
+
+    /**
+    * Used to check if pair was flipped
+    *
+    * @return {string} result - 'nopair' if no pair was flipped. Otherwise players colorclass.
+    */
+    gotPair() {
+        var result = "";
+
+        if (this.paircheck != "") {
+            result = this.paircheck;
+            this.paircheck = "";
+        }
+        return result;
     }
 }
 

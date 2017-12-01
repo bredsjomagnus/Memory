@@ -56,6 +56,24 @@ class Memorycard {
     }
 
     /**
+    * Get positions of cards with certain value
+    *
+    * @param {string} cardvalue
+    *
+    */
+    getPairPositions(pairvalue) {
+        var pairpositions = [];
+
+        this.cards.forEach(function(cardvalue, position, cards) {
+            console.log(cards);
+            if (cardvalue == pairvalue) {
+                pairpositions.push(position);
+            }
+        });
+        return pairpositions;
+    }
+
+    /**
      * Get id of memorycard based on value.
      *
      * @param {integer} id - The id of the card.
@@ -128,6 +146,10 @@ class Memorycard {
             this.cardvalues[n] = this.cardvalues[i];
             this.cardvalues[i] = temp;
         }
+    }
+
+    getCardValues() {
+        return [...this.cards.values()];
     }
 }
 

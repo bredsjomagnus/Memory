@@ -7,7 +7,8 @@
     let clientlist  = document.getElementById("clientarea");
     let output      = document.getElementById("msgarea");
     let sendmessage = document.getElementById("messagebtn");
-    let startgame = document.getElementById("startgame");
+    let startgame   = document.getElementById("startgame");
+    let nextturnbtn = document.getElementById("nextturnbtn");
     let clientmessage = document.getElementById("message");
     let close       = document.getElementById("disconnectbtn");
     // var nicknamevalue = document.getElementById('nickname').value;
@@ -71,6 +72,7 @@
         var cardholder;
 
         console.log("active player: " + gameboard.activeplayer);
+        console.log("renderGameBoard - gotpair: " + gameboard.gotpair);
 
         document.getElementById("gameboard").innerHTML = "";
         gameboardhtml = document.createElement("table");
@@ -87,6 +89,7 @@
                     // card.innerHTML = "Kort: "+x+", "+y;
                     card.innerHTML = "<img class='cardimage' src='/images/memorycards/cardbackside.png' />";
                 } else {
+                    card.setAttribute("class", "cardholder "+gameboard.gotpair);
                     card.innerHTML = "<img class='cardimage' src='/images/memorycards/"+gameboard.cardvalue[gameboard.position.indexOf(x+""+y)]+"' />";
                     // card.innerHTML = "Värde: " +
                     // gameboard.cardvalue[gameboard.position.indexOf(x+""+y)];
@@ -98,6 +101,7 @@
                         msg = {
                             type: "clickingcard",
                             player: player.nickname,
+                            colorclass: player.colorclass,
                             x: x,
                             y: y
                         };
@@ -176,18 +180,16 @@
                 addClientMsg(jsonmsg);
             } else if (jsonmsg.type === 'startgame') {
                 $("#startgame").hide();
-                // console.log("gameboard params");
-                // console.log(gameboard.width);
                 // generate gameboard on clientside.
-                if (jsonmsg.turnback) {
-                    console.log("turnback: " + jsonmsg.turnback);
-                    $("#nextturnbtn").show();
-                    renderGameBoard(jsonmsg.gameboard);
-                    // here i need to render old setting first before new setting is rendered.
-                } else {
-                    renderGameBoard(jsonmsg.gameboard);
-                    renderClientArea(jsonmsg);
-                }
+                console.log("pairpositions: " + jsonmsg.gameboard.pairpositions);
+                renderGameBoard(jsonmsg.gameboard);
+                renderClientArea(jsonmsg);
+            } else if (jsonmsg.type === 'turnbackstageone') {
+                // när två olika kort lyfts
+                // jsonmsg.gameboard är inte resettat i detta läge.
+                renderGameBoard(jsonmsg.gameboard);
+            } else if (jsonmsg.type === 'nextturnbtn') {
+                $("#nextturnbtn").show();
             }
         };
 
@@ -239,6 +241,22 @@
             console.log("Starting up a new game");
             // outputLog("You said: " + messagetext);
             $("#startgame").hide();
+        }
+    });
+
+    nextturnbtn.addEventListener("click", function(/*event*/) {
+        var msg;
+
+        if (!websocket || websocket.readyState === 3) {
+            console.log("The websocket is not connected to a server.");
+        } else {
+            msg = {
+                type: "flip"
+            };
+            websocket.send(JSON.stringify(msg));
+            console.log("reset gameboard");
+            // outputLog("You said: " + messagetext);
+            $("#nextturnbtn").hide();
         }
     });
 
