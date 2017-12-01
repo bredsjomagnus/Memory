@@ -22,6 +22,7 @@ class Gameboard {
         this.gotpair;
         this.pairpositions = [];
         this.pairvalues = [];
+        this.paircolors = [];
     }
 
     getWidth() {
@@ -60,6 +61,11 @@ class Gameboard {
     addPairValues(cardvalue) {
         this.pairvalues.push(cardvalue);
         this.pairvalues.push(cardvalue);
+    }
+
+    addPairColors(colorclass) {
+        this.paircolors.push(colorclass);
+        this.paircolors.push(colorclass);
     }
 
     /**

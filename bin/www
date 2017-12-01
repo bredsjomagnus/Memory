@@ -188,6 +188,7 @@ wss.on("connection", (ws, data) => {
                     pairpositions = memorycard.getPairPositions(cardvalue);
                     gameboard.addPairPositions(pairpositions);
                     gameboard.addPairValues(cardvalue);
+                    gameboard.addPairColors(jsonmsg.colorclass);
                 }
             }
 

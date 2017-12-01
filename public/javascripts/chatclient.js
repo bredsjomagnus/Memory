@@ -89,7 +89,12 @@
                     // card.innerHTML = "Kort: "+x+", "+y;
                     card.innerHTML = "<img class='cardimage' src='/images/memorycards/cardbackside.png' />";
                 } else {
-                    card.setAttribute("class", "cardholder "+gameboard.gotpair);
+                    // gameboard.cardvalue[gameboard.position.indexOf(x+""+y)] = kortvärdet alltså bilden
+                    //
+                    if (gameboard.pairvalues.indexOf(gameboard.cardvalue[gameboard.position.indexOf(x+""+y)]) != 1) {
+                        card.setAttribute("class", "cardholder "+gameboard.paircolors[gameboard.pairvalues.indexOf(gameboard.cardvalue[gameboard.position.indexOf(x+""+y)])]);
+                    }
+
                     card.innerHTML = "<img class='cardimage' src='/images/memorycards/"+gameboard.cardvalue[gameboard.position.indexOf(x+""+y)]+"' />";
                     // card.innerHTML = "Värde: " +
                     // gameboard.cardvalue[gameboard.position.indexOf(x+""+y)];
