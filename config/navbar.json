@@ -4,7 +4,7 @@
         "text": "Hem"
     },
     {
-        "route": "memory/startmemory",
+        "route": "/memory/startmemory",
         "text": "Memory"
     }
 ]

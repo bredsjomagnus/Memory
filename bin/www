@@ -127,7 +127,7 @@ wss.on("connection", (ws, data) => {
             wss.broadcastUsers(JSON.stringify(msg));
         } else if (jsonmsg.type === 'startgame') {
             var playerinturn;
-            gameboard = new Gameboard(4, 3);
+            gameboard = new Gameboard(4, 5);
             memorycard.placeCards(); // shuffle and place cards on gameboard
             playerinturn = gamebrain.setActivePlayer(true); // true for first turn
             gameboard.setActivePlayer(playerinturn);

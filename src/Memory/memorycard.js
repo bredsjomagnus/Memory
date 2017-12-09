@@ -16,7 +16,11 @@ class Memorycard {
             ["01", "monkeys.png"], ["11", "monkeys.png"],
             ["21", "panda.png"], ["31", "panda.png"],
             ["02", "puppy.png"], ["12", "puppy.png"],
-            ["22", "ram.png"], ["32", "ram.png"]
+            ["22", "ram.png"], ["32", "ram.png"],
+            ["03", "wolf.png"], ["13", "wolf.png"],
+            ["23", "squirrel.png"], ["33", "squirrel.png"],
+            ["04", "fox.png"], ["14", "fox.png"],
+            ["24", "bear.png"], ["34", "bear.png"],
         ]);
         this.cardvalues = [
             "alpaca.png", "alpaca.png",
@@ -24,11 +28,18 @@ class Memorycard {
             "monkeys.png", "monkeys.png",
             "panda.png", "panda.png",
             "puppy.png", "puppy.png",
-            "ram.png", "ram.png"];
+            "ram.png", "ram.png",
+            "wolf.png", "wolf.png",
+            "squirrel.png", "squirrel.png",
+            "fox.png", "fox.png",
+            "bear.png", "bear.png"
+        ];
         this.positions = [
             "00", "10", "20", "30",
             "01", "11", "21", "31",
-            "02", "12", "22", "32"
+            "02", "12", "22", "32",
+            "03", "13", "23", "33",
+            "04", "14", "24", "34"
         ];
         // this.cardvalue              = [1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6];
         // this.defaultcardpositions   = [
@@ -37,7 +48,7 @@ class Memorycard {
         //     "02", "12", "22", "32"
         // ];
         // this.cardpositions  = this.defaultcardpositions;
-        this.numOfCards     = 12;
+        this.numOfCards     = 20;
     }
 
     /**

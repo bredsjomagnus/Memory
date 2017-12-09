@@ -148,8 +148,10 @@
     * What to do when user clicks Connect
     */
     connect.addEventListener("click", function() {
-        console.log("Connecting to ws://localhost:8001/.");
-        websocket = new WebSocket('ws://localhost:8001/');
+        // console.log("Connecting to ws://localhost:8001/.");
+        // websocket = new WebSocket('ws://localhost:8001/');
+        console.log("Connecting to ws://82.102.5.98:8001/.");
+        websocket = new WebSocket('ws://82.102.5.98:8001/');
         websocket.onopen = function() {
             console.log("The websocket is now open.");
             // console.log(websocket);
