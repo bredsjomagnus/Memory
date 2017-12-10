@@ -48,7 +48,11 @@ function checkResetedPosition() {
         "monkeys.png", "monkeys.png",
         "panda.png", "panda.png",
         "puppy.png", "puppy.png",
-        "ram.png", "ram.png"]);
+        "ram.png", "ram.png",
+        "wolf.png", "wolf.png",
+        "squirrel.png", "squirrel.png",
+        "fox.png", "fox.png",
+        "bear.png", "bear.png"]);
 }
 
 function checkShuffledPosition() {
@@ -62,7 +66,11 @@ function checkShuffledPosition() {
         "monkeys.png", "monkeys.png",
         "panda.png", "panda.png",
         "puppy.png", "puppy.png",
-        "ram.png", "ram.png"]);
+        "ram.png", "ram.png",
+        "wolf.png", "wolf.png",
+        "squirrel.png", "squirrel.png",
+        "fox.png", "fox.png",
+        "bear.png", "bear.png"]);
 }
 
 /**

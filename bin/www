@@ -5,18 +5,24 @@
  */
 
 var app = require('../app');
-const Gameboard = require('../src/Memory/gameboard');
+
 var debug = require('debug')('app:server');
 var http = require('http');
 const WebSocket = require("ws");
 // var users = [];
 // var usersobj = {};
 var usersobject = [];
-const Gamebrain = require('../src/Memory/gamebrain');
-let gamebrain = new Gamebrain();
+var connectedws = [];
 
-const Memorycard = require('../src/Memory/memorycard');
-let memorycard = new Memorycard();
+const Memory = require('memorytest');
+
+// const Gameboard = require('../src/Memory/gameboard');
+// const Gamebrain = require('../src/Memory/gamebrain');
+// const Memorycard = require('../src/Memory/memorycard');
+// const Gameboard = new Memory.Gameboard();
+let gameboard;
+let gamebrain = new Memory.Gamebrain();
+let memorycard = new Memory.Memorycard();
 /**
  * Get port from environment and store in Express.
  */
@@ -39,27 +45,20 @@ const wss = new WebSocket.Server({
 wss.adduser = (nickname, ws) => {
     usersobject.push({
         name: nickname,
+        isAlive: true,
         websocket: ws
     });
-    // users.push(nickname);
-
 }
 
 wss.dropuser = (ws) => {
     var deletenick;
     var founduser = false;
 
-    // Hitta rätt spelare utefter dess 'ws'
-    // och ta bort spelare ur listor.
     usersobject.forEach((userobj) => {
         if (userobj.websocket === ws) {
             founduser = true;
             console.log("Drop " + userobj.name);
             deletenick = userobj.name;
-            // users = users.filter( function(deletenick) {
-            //     return deletenick;
-            // });
-            // users.splice(users.indexOf(deletenick), 1);
             gamebrain.dropPlayer(deletenick);
         }
     });
@@ -69,12 +68,40 @@ wss.dropuser = (ws) => {
            return usr.websocket !== ws;
         });
     }
+}
 
+wss.dropdead = () => {
+    var deletenick;
+    var founduser = false;
+    // var ws;
+
+    usersobject.forEach((userobj) => {
+        if (!userobj.isAlive) {
+            founduser = true;
+            // ws = userobj.websocket;
+            console.log("Drop " + userobj.name);
+            deletenick = userobj.name;
+            gamebrain.dropPlayer(deletenick);
+        }
+    });
+
+    if (founduser) {
+        // console.log("found user to drop dead");
+        usersobject = usersobject.filter(function(usr) {
+           return usr.isAlive;
+        });
+        msg = {
+            type: "users",
+            userarray: gamebrain.getPlayersNicks(),
+            userscolors: gamebrain.getPlayersColors()
+        }
+        wss.broadcastUsers(JSON.stringify(msg));
+    }
 }
 
 
 
-// Broadcast data to everyone except one self (ws).
+// Broadcast data to everyone.
 wss.broadcastUsers = (data) => {
     let clients = 0;
     wss.clients.forEach((client) => {
@@ -88,9 +115,65 @@ wss.answerBackWith = (data, ws) => {
     ws.send(data);
 };
 
+// setInterval(
+//     function(){
+//         var interval = 20 * 1000;
+//         var currentTime = new Date().getTime();
+//         if( ! app.lastMessageSent || app.lastMessageSent < currentTime - interval ){
+//             app.sendToServer("Ping");
+//             app.lastMessageSent = currentTime;
+//         }
+//     },
+//     1000
+// );
+
+// wss.addpong = (ws) => {
+//     connectedws.push(ws);
+//     setTimeout(function(){
+//
+//         if (wss.clients.size == connectedws.length) {
+//             console.log("Lika många i klientlistan som pongade tillbaka");
+//         } else {
+//             console.log("connectedws.length: " + connectedws.length);
+//             console.log("wss.clients.size: " + wss.clients.size);
+//             console.log("Någon saknas!");
+//         }
+//     }, 5000);
+//     setTimeout(function(){
+//         connectedws = [];
+//     }, 6000);
+// }
+
+function heartbeat() {
+  this.isAlive = true;
+}
+
+const interval = setInterval(function ping() {
+    // console.log();
+    // console.log("usersobject.length: " + usersobject.length);
+    // console.log("wss.clients.size: " + wss.clients.size);
+    if (usersobject.length != wss.clients.size) {
+        usersobject.forEach(function(usr) {
+            usr.isAlive = false;
+        });
+        wss.clients.forEach(function each(ws) {
+            usersobject.forEach((userobj) => {
+                if (userobj.websocket === ws) {
+                    userobj.isAlive = true;
+                }
+            });
+        });
+        wss.dropdead();
+    }
+}, 5000);
+
+
 // Setup for websocket requests.
 // Docs: https://github.com/websockets/ws/blob/master/doc/ws.md
 wss.on("connection", (ws, data) => {
+    ws.isAlive = true;
+    ws.on('pong', heartbeat);
+
     console.log("Connection received. Adding client.");
     ws.on("message", (message) => {
         jsonmsg = JSON.parse(message);
@@ -127,7 +210,8 @@ wss.on("connection", (ws, data) => {
             wss.broadcastUsers(JSON.stringify(msg));
         } else if (jsonmsg.type === 'startgame') {
             var playerinturn;
-            gameboard = new Gameboard(4, 5);
+            // gameboard = new Gameboard(4, 5);
+            gameboard = new Memory.Gameboard(4, 5);
             memorycard.placeCards(); // shuffle and place cards on gameboard
             playerinturn = gamebrain.setActivePlayer(true); // true for first turn
             gameboard.setActivePlayer(playerinturn);
@@ -150,8 +234,8 @@ wss.on("connection", (ws, data) => {
             var gotpair;
             var pairpositions = [];
 
-            console.log("Kortens värden per position: " +memorycard.getCardValues());
-            console.log(jsonmsg.player+" vänder på kort med värde "+cardvalue);
+            // console.log("Kortens värden per position: " +memorycard.getCardValues());
+            // console.log(jsonmsg.player+" vänder på kort med värde "+cardvalue);
             gameboard.addPosition(position);
             gameboard.addCardValue(cardvalue);
 
@@ -184,7 +268,7 @@ wss.on("connection", (ws, data) => {
                 gameboard.setActivePlayer(playerinturn);
 
                 if (gotpair != "") {
-                    console.log("ÄR HÄR INNE OCH INGEN ANNANSTANS: " + gotpair);
+                    // console.log("ÄR HÄR INNE OCH INGEN ANNANSTANS: " + gotpair);
                     pairpositions = memorycard.getPairPositions(cardvalue);
                     gameboard.addPairPositions(pairpositions);
                     gameboard.addPairValues(cardvalue);
@@ -215,6 +299,11 @@ wss.on("connection", (ws, data) => {
             }
             wss.broadcastUsers(JSON.stringify(msg));
         }
+        //  else if (jsonmsg.type === 'pong') {
+        //     console.log('pong from<br>');
+        //     wss.addpong(ws)
+        //     // connectedws = [];
+        // }
     });
 
     ws.on("error", (error) => {

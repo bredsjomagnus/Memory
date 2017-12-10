@@ -6,6 +6,7 @@
     let nickname    = document.getElementById('nickname');
     let clientlist  = document.getElementById("clientarea");
     let output      = document.getElementById("msgarea");
+    // let gameboard   = document.getElementById("gameboard");
     let sendmessage = document.getElementById("messagebtn");
     let startgame   = document.getElementById("startgame");
     let nextturnbtn = document.getElementById("nextturnbtn");
@@ -42,7 +43,7 @@
         var HTMLlist = "";
         var yourturn = "";
 
-        console.log("Inne i renderClientArea, uniquenickname = " + player.nickname);
+        // console.log("Inne i renderClientArea, uniquenickname = " + player.nickname);
 
         if (jsonmsg.playersturn == undefined) {
             yourturn = "";
@@ -71,8 +72,8 @@
         var card;
         var cardholder;
 
-        console.log("active player: " + gameboard.activeplayer);
-        console.log("renderGameBoard - gotpair: " + gameboard.gotpair);
+        // console.log("active player: " + gameboard.activeplayer);
+        // console.log("renderGameBoard - gotpair: " + gameboard.gotpair);
 
         document.getElementById("gameboard").innerHTML = "";
         gameboardhtml = document.createElement("table");
@@ -148,10 +149,10 @@
     * What to do when user clicks Connect
     */
     connect.addEventListener("click", function() {
-        // console.log("Connecting to ws://localhost:8001/.");
-        // websocket = new WebSocket('ws://localhost:8001/');
-        console.log("Connecting to ws://82.102.5.98:8001/.");
-        websocket = new WebSocket('ws://82.102.5.98:8001/');
+        console.log("Connecting to ws://localhost:8001/.");
+        websocket = new WebSocket('ws://localhost:8001/');
+        // console.log("Connecting to ws://82.102.5.98:8001/.");
+        // websocket = new WebSocket('ws://82.102.5.98:8001/');
         websocket.onopen = function() {
             console.log("The websocket is now open.");
             // console.log(websocket);
@@ -165,6 +166,8 @@
             $("#connectform").hide();
             $("#messageform").show();
             $("#startgame").show();
+            document.getElementById('gameboard').innerHTML = '';
+            $("#gameboard").show();
         };
 
         websocket.onmessage = function(event) {
@@ -181,14 +184,14 @@
                 // console.log(jsonmsg.userarray);
                 renderClientArea(jsonmsg);
             } else if (jsonmsg.type === 'uniquename') {
-                console.log("Uniquenickname (from server): " + jsonmsg.uniquenick);
+                // console.log("Uniquenickname (from server): " + jsonmsg.uniquenick);
                 setPlayerparams(jsonmsg);
             } else if (jsonmsg.type === 'clientmsg') {
                 addClientMsg(jsonmsg);
             } else if (jsonmsg.type === 'startgame') {
                 $("#startgame").hide();
                 // generate gameboard on clientside.
-                console.log("pairpositions: " + jsonmsg.gameboard.pairpositions);
+                // console.log("pairpositions: " + jsonmsg.gameboard.pairpositions);
                 renderGameBoard(jsonmsg.gameboard);
                 renderClientArea(jsonmsg);
             } else if (jsonmsg.type === 'turnbackstageone') {
@@ -198,6 +201,14 @@
             } else if (jsonmsg.type === 'nextturnbtn') {
                 $("#nextturnbtn").show();
             }
+            // else if (jsonmsg.type === 'ping') {
+            //     console.log(jsonmsg.content);
+            //     msg = {
+            //         type: "pong",
+            //         content: "im here"
+            //     };
+            //     websocket.send(JSON.stringify(msg));
+            // }
         };
 
         websocket.onclose = function() {
@@ -205,6 +216,7 @@
             // console.log(websocket);
             $("#messageform").hide();
             $("#startgame").hide();
+            $("#gameboard").hide();
             $("#connectform").show();
         };
     }, false);
